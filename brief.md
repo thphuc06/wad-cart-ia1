@@ -40,6 +40,10 @@ Assert the spec, not the implementation: no mocks, no checking of intermediate v
 8. A negative price throws `RangeError`.
 9. `qty: 0`, `qty: -1` and `qty: 1.5` each throw `RangeError` (one test each).
 10. `price: 0` does not throw.
+11. `vatRate` comes from `options`: one item `price: 100000, qty: 1` with `{ vatRate: 0.1, freeShipFrom: 1000000, shipFee: 20000 }` returns `130000`.
+12. `freeShipFrom` and `shipFee` come from `options`: the same item with `{ vatRate: 0.1, freeShipFrom: 100000, shipFee: 20000 }` returns `110000`.
+13. A fraction of 0.5 or more rounds up: one item `price: 1007, qty: 1` with the example options returns `31088`.
+14. The subtotal is summed across items before the threshold check: items `300000` and `200000` (qty 1 each) with the example options return `540000`.
 
 ## Done when
 - `npm test` is green and `npm run lint` is clean.
