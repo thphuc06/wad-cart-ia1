@@ -23,3 +23,11 @@ Changed: nothing in its 12 tests. After my review I updated the "Tests to write"
 Rejected: nothing.
 By hand: reviewed its tests against README.md and found gaps: every test used the same `options`, rounding was only tested downwards, and the free-shipping threshold was only tested with one item. I added four tests to `test/cart.test.js`: `vatRate` from options (130000), `freeShipFrom` and `shipFee` from options (110000), rounding up with `price: 1007` (31088) and the subtotal summed across items (
 540000). The ideas came from reviewing with the assistant; I added them. `npm test` now shows 17 red tests.
+
+## 2026-10-08 — implement cartTotal (brief step 2)
+Tool: Claude Code.
+Asked for: step 2 of brief.md — implement `cartTotal` in `src/cart.js` until `npm test` is green.
+Kept: the implementation as generated: validate every item first (`price < 0` and `!Number.isInteger(qty) || qty < 1` throw `RangeError`), return `0` for an empty cart, sum `price × qty`, shipping is `0` when `subtotal >= freeShipFrom`, return `Math.round(subtotal + vatRate × subtotal + shipping)`. It changed only `src/cart.js`; the tests, `package.json` and the harness files were untouched. `npm test` passes 17/17 and `npm run lint` is clean.
+Changed: nothing.
+Rejected: nothing. The assistant noted two things outside the spec and I accepted both: a `NaN` or non-number `price` is not blocked, because the spec only forbids a negative price and the brief says no extra validation; and `Math.round` on floating-point values was not tested near `.5`, which the spec does not define.
+By hand: read `src/cart.js` line by line and mapped each rule of README.md to the code (subtotal, VAT on the subtotal only, free shipping at the threshold, empty cart, `RangeError` cases, rounded number). I also reviewed the diff against the five red flags with the assistant: no invented API, no new package, no swallowed error, no duplicated code, no test touched. I did not write any line of the implementation myself.
