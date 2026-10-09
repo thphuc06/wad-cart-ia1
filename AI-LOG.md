@@ -19,10 +19,9 @@ By hand: compared brief.md against README.md to make sure the logic is correct. 
 Tool: Claude Code.
 Asked for: step 1 of brief.md only — write the tests for `cartTotal` in `test/cart.test.js`, run `npm test`, and stop for review.
 Kept: the 12 tests it wrote, as written (result is a number, result is an integer, empty cart, subtotal equal to / just below / above `freeShipFrom`, rounding with `price: 1001`, negative price, `qty` 0 / -1 / 1.5, `price: 0`). It left the starter test untouched and changed only `test/cart.test.js`. `npm test` was red for all 13 tests, which is expected before the implementation.
-Changed: nothing in its 12 tests. After my review I updated the "Tests to write" list in brief.md (items 11–14, written by the assistant at my request) so the brief matches the final test suite; the version of the brief the assistant received for this step is commit 9e7fc6a.
+Changed: nothing in its 12 tests. After my review I updated the "Tests to write" list in brief.md (items 11–14, written by the assistant at my request) so the brief matches the final test suite; the version of the brief the assistant received for this step is commit 9e7fc6a. I also ran `git restore` on `test/cart.test.js` by mistake before committing it; the assistant rebuilt the file from the reviewed diff (same 70 added lines, 17 tests).
 Rejected: nothing.
-By hand: reviewed its tests against README.md and found gaps: every test used the same `options`, rounding was only tested downwards, and the free-shipping threshold was only tested with one item. I added four tests to `test/cart.test.js`: `vatRate` from options (130000), `freeShipFrom` and `shipFee` from options (110000), rounding up with `price: 1007` (31088) and the subtotal summed across items (
-540000). The ideas came from reviewing with the assistant; I added them. `npm test` now shows 17 red tests.
+By hand: reviewed its tests against README.md and found gaps: every test used the same `options`, rounding was only tested downwards, and the free-shipping threshold was only tested with one item. I added four tests to `test/cart.test.js`: `vatRate` from options (130000), `freeShipFrom` and `shipFee` from options (110000), rounding up with `price: 1007` (31088) and the subtotal summed across items (540000). The ideas came from reviewing with the assistant; I added them. `npm test` now shows 17 red tests.
 
 ## 2026-10-08 — implement cartTotal (brief step 2)
 Tool: Claude Code.
@@ -31,3 +30,11 @@ Kept: the implementation as generated: validate every item first (`price < 0` an
 Changed: nothing.
 Rejected: nothing. The assistant noted two things outside the spec and I accepted both: a `NaN` or non-number `price` is not blocked, because the spec only forbids a negative price and the brief says no extra validation; and `Math.round` on floating-point values was not tested near `.5`, which the spec does not define.
 By hand: read `src/cart.js` line by line and mapped each rule of README.md to the code (subtotal, VAT on the subtotal only, free shipping at the threshold, empty cart, `RangeError` cases, rounded number). I also reviewed the diff against the five red flags with the assistant: no invented API, no new package, no swallowed error, no duplicated code, no test touched. I did not write any line of the implementation myself.
+
+## 2026-10-09 — SELF_ASSESSMENT_REPORT.md
+Tool: Claude Code.
+Asked for: draft SELF_ASSESSMENT_REPORT.md from the teacher's template, with one row per rubric criterion and evidence taken from the repo (test names, files, commits, CI runs).
+Kept: the structure, the evidence lines (commits `f333211`, `ab6c4a1`, `9e7fc6a`, `00ce349`, `1470586`, `99836cd`, test names, CI red then green) and the rest of the "What I did not manage" and "What I would do differently" sections. I asked it to shorten one bullet about testing with varied inputs.
+Changed: the assistant first proposed 85 / 100 because it docked marks for things outside the rubric text. After re-reading the rubric I asked it to score against the top-band conditions, and the total became 100 / 100; its evidence was rechecked against `git log` and the CI runs.
+Rejected: its first set of lower marks, because the top-band conditions of the rubric are all met.
+By hand: read the whole report and deleted a few lines the assistant wrote (some items in "What I did not manage" and "What I would do differently", and part of the AI-LOG evidence) because I found them unnecessary or not fitting. I also entered my student ID and name and decided the final total that goes in the zip name.
